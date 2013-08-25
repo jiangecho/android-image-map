@@ -2,7 +2,11 @@ package net.yoojia.imagemap;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.util.AttributeSet;
+
+import net.yoojia.imagemap.core.CircleShape;
 import net.yoojia.imagemap.core.Shape;
 import net.yoojia.imagemap.core.ShapeExtension;
 
@@ -56,6 +60,14 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
         return new ArrayList<Shape>(shapesCache.values());
     }
 
+    public Shape getShape(Object tag){
+        if (!shapesCache.containsKey(tag)){
+            return null;
+        }
+
+        return shapesCache.get(tag);
+    }
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -65,6 +77,90 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
         canvas.save();
         onDrawWithCanvas(canvas);
 	}
+
+    //TODO now this function is just for circle
+    public void postInvalidate(Object tag){
+        CircleShape shape = (CircleShape) shapesCache.get(tag);
+        float radius = shape.getRadius();
+        PointF pointF = shape.getCenterPoint();
+        int left = (int) (pointF.x - radius) + 1;
+        int top = (int) (pointF.y - radius) + 1;
+        int right = (int) (pointF.x + radius) + 1;
+        int bottom = (int) (pointF.y + radius) + 1;
+
+        postInvalidate(left, top, right, bottom);
+        //postInvalidateOnAnimation();
+        //postInvalidate((int)(pointF.x - radius), pointF.y - radius, pointF.x + radius, pointF.y +radius);
+    }
+
+    public void setShapeColor(Object tag, int coverColor){
+        if (!shapesCache.containsKey(tag)){
+            return;
+        }
+        shapesCache.get(tag).setColor(coverColor);
+    }
+    //TODO now this function is just for circle
+    public void highLightShape(Object tag){
+        if (!shapesCache.containsKey(tag)){
+           return;
+        }
+        Shape shape = shapesCache.get(tag);
+        if (!(shape instanceof CircleShape)){
+            return;
+        }
+        final CircleShape circleShape = (CircleShape) shape;
+        circleShape.setColor(0xFF00FF);
+        circleShape.setLightingStatus(true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final int MAX_RADIUS = 20;
+
+                while (circleShape.isLighting()){
+                    try {
+                        PointF pointF = circleShape.getCenterPoint();
+                        int left = (int) (pointF.x - MAX_RADIUS);
+                        int top = (int) (pointF.y - MAX_RADIUS);
+                        int right = (int) (pointF.x + MAX_RADIUS);
+                        int bottom = (int) (pointF.y + MAX_RADIUS);
+
+                        circleShape.setRadius(5);
+                        postInvalidate(left, top, right, bottom);
+                        Thread.sleep(1000);
+
+                        circleShape.setRadius(10);
+                        postInvalidate(left, top, right, bottom);
+                        Thread.sleep(1000);
+
+//                        circleShape.setRadius(15);
+//                        postInvalidate(left, top, right, bottom);
+//                        Thread.sleep(1000);
+
+                        circleShape.setRadius(20);
+                        postInvalidate(left, top, right, bottom);
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            }
+        }).start();
+    }
+
+    //TODO now this function is just for circle shape
+    public void stopHighLighting(Object tag){
+        if (!shapesCache.containsKey(tag)){
+            return;
+        }
+        Shape shape = shapesCache.get(tag);
+        if (!(shape instanceof CircleShape)){
+            return;
+        }
+        shape.setColor(Color.GRAY);
+        ((CircleShape) shape).setLightingStatus(false);
+    }
 
     /**
      * 如果继承HighlightImageView，并需要在Canvas上绘制，可以Override这个方法来实现。

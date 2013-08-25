@@ -8,6 +8,7 @@ public class CircleShape extends Shape {
 	
 	private PointF center;
 	private float radius = 5f;
+    private boolean isLighting;
 
 	public CircleShape(Object tag, int coverColor) {
 		super(tag, coverColor);
@@ -35,6 +36,10 @@ public class CircleShape extends Shape {
         this.radius = radius;
     }
 
+    public float getRadius(){
+        return this.radius;
+    }
+
     @Override
 	public PointF getCenterPoint(){
 		return center;
@@ -49,14 +54,14 @@ public class CircleShape extends Shape {
 	@Override
 	public void scaleBy (float scale, float centerX, float centerY) {
         PointF newCenter = ScaleUtility.scaleByPoint(center.x, center.y, centerX, centerY, scale);
-        radius *= scale;
+        //radius *= scale;
         center.set(newCenter.x,newCenter.y);
 	}
 
 	@Override
 	public void onScale(float scale){
 //		scaleBy = (float)Math.sqrt(scaleBy);
-		radius *= scale;
+		//radius *= scale;
 		center.set( center.x *= scale , center.y *= scale );
 	}
 
@@ -76,6 +81,14 @@ public class CircleShape extends Shape {
             ret = true;
         }
         return ret;
+    }
+
+    public void setLightingStatus(boolean isLighting){
+        this.isLighting = isLighting;
+    }
+
+    public boolean isLighting(){
+        return this.isLighting;
     }
 
 }

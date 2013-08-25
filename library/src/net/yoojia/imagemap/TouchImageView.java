@@ -322,11 +322,13 @@ public class TouchImageView extends ImageView {
 
 	private void initSize(){
 		// 初始时，图片与View边缘之间的距离
-		redundantYSpace = viewHeight - (saveScale * bmHeight) ;
-		redundantXSpace = viewWidth - (saveScale * bmWidth);
+//		redundantYSpace = viewHeight - (saveScale * bmHeight) ;
+//		redundantXSpace = viewWidth - (saveScale * bmWidth);
+        redundantYSpace = (viewHeight -  bmHeight) / 2;
+        redundantXSpace = (viewWidth - bmWidth) / 2;
 
-		redundantYSpace /= (float)2;
-		redundantXSpace /= (float)2;
+//		redundantYSpace /= (float)2;
+//		redundantXSpace /= (float)2;
 
 		origWidth = viewWidth - 2 * redundantXSpace;
 		origHeight = viewHeight - 2 * redundantYSpace;

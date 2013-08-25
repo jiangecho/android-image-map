@@ -66,6 +66,8 @@ public class Bubble extends FrameLayout{
 		setBubbleViewAtPosition(posX, posY);
     }
 
+    // BUG: 在屏幕边的时候，需要平移，不然会超出屏幕，导致看不到。
+	// TODO 此BUG 还没有解决
     private void setBubbleViewAtPosition(float x, float y){
 
 		// BUG : HTC SDK 2.3.3 界面会被不停的重绘,这个重绘请求是View.onDraw()方法发起的。

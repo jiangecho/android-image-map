@@ -4,7 +4,7 @@ import android.graphics.*;
 
 public abstract class Shape {
 
-	public final int color;
+	public int color;
 	public final Object tag;
 
     protected Bubble displayBubble;
@@ -28,6 +28,11 @@ public abstract class Shape {
 		drawPaint.setAntiAlias(true);
         drawPaint.setFilterBitmap(true);
 
+    }
+
+    public void setColor(int color){
+        this.color = color;
+        drawPaint.setColor(color);
     }
 
 	public void setAlaph(int alaph){

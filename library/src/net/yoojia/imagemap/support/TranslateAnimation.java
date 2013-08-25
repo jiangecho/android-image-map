@@ -56,7 +56,7 @@ public class TranslateAnimation extends Animation {
 
 			float stepDeltaX = deltaX - lastX;
 			float stepDeltaY = deltaY - lastY;
-			listener.onTranslate(-stepDeltaX, -stepDeltaY);
+			listener.onTranslate(stepDeltaX, stepDeltaY);
 			lastX = deltaX;
 			lastY = deltaY;
         }

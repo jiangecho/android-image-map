@@ -75,32 +75,87 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
         }
     }
 
+    public void showBubbleAtShape(Object tag){
+        if (tag == null){
+            return;
+        }
+
+        Shape shape = highlightImageView.getShape(tag);
+        if (shape != null){
+            shape.createBubbleRelation(bubble);
+        }
+    }
+
+    public void removeBubbleAtShape(Object tag){
+        if (tag == null){
+            return;
+        }
+        Shape shape = highlightImageView.getShape(tag);
+        if (shape != null){
+            shape.cleanBubbleRelation();
+        }
+    }
+
 	@Override
 	public void onTranslate (float deltaX, float deltaY) {
 		highlightImageView.moveBy(deltaX, deltaY);
 	}
 
-    @Override
-    public void addShape(Shape shape) {
+    public void highlightShape(Object tag){
+        moveShapeToCenter(highlightImageView.getShape(tag));
+        highlightImageView.highLightShape(tag);
+    }
 
-		float scale = highlightImageView.getScale();
-		shape.onScale(scale);
+    public void stopHighlighShape(Object tag){
+        highlightImageView.stopHighLighting(tag);
+    }
 
-		// 将图像中心移动到目标形状的中心坐标上
-		// Move the center point of the image to the target shape center.
-		PointF from = highlightImageView.getAbsoluteCenter();
-		PointF to = shape.getCenterPoint();
-		TranslateAnimation movingAnimation = new TranslateAnimation(from.x,to.x,from.y,to.y);
+    private void moveShapeToCenter(Shape shape){
+//        float scale = highlightImageView.getScale();
+//        shape.onScale(scale);
+        int[] viewLocation = new int[2];
+        this.getLocationOnScreen(viewLocation);
+        int viewWidth = this.getWidth();
+        int viewHeight = this.getHeight();
+
+        int toX = (viewLocation[0] + viewWidth) / 2;
+        int toY = (viewLocation[1] + viewHeight) / 2;
+
+        // 将形状移动到图像所在的View的中心
+        // Move the shape to the center of View containing the image
+        PointF to = highlightImageView.getAbsoluteCenter();
+        PointF from = shape.getCenterPoint();
+        TranslateAnimation movingAnimation = new TranslateAnimation(from.x,toX,from.y,toY);
 		movingAnimation.setOnAnimationListener(this);
 		movingAnimation.setInterpolator(new DecelerateInterpolator());
 		movingAnimation.setDuration(500);
 		movingAnimation.setFillAfter(true);
 		viewForAnimation.startAnimation(movingAnimation);
 
-		PointF offset = highlightImageView.getAbsoluteOffset();
-		shape.onTranslate(offset.x , offset.y);
-		highlightImageView.addShape(shape);
+    }
 
+    @Override
+    public void addShape(Shape shape) {
+
+//		float scale = highlightImageView.getScale();
+//		shape.onScale(scale);
+//
+//		// 将图像中心移动到目标形状的中心坐标上
+//		// Move the center point of the image to the target shape center.
+//		PointF from = highlightImageView.getAbsoluteCenter();
+//		PointF to = shape.getCenterPoint();
+//		TranslateAnimation movingAnimation = new TranslateAnimation(from.x,to.x,from.y,to.y);
+//		movingAnimation.setOnAnimationListener(this);
+//		movingAnimation.setInterpolator(new DecelerateInterpolator());
+//		movingAnimation.setDuration(500);
+//		movingAnimation.setFillAfter(true);
+//		viewForAnimation.startAnimation(movingAnimation);
+//
+//		PointF offset = highlightImageView.getAbsoluteOffset();
+//		shape.onTranslate(offset.x , offset.y);
+
+        //moveShapeToCenter(shape);
+		highlightImageView.addShape(shape);
 
     }
 
